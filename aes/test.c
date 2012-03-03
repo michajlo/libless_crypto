@@ -14,6 +14,7 @@
 
 void test_expand_key() {
     aes_t aes;
+    uint8_t key[] = "Hello world12345";
     uint8_t expected[] = 
             "\x48\x65\x6c\x6c\x6f\x20\x77\x6f\x72\x6c\x64\x31\x32\x33\x34\x35"
             "\x8a\x7d\xfa\x4f\xe5\x5d\x8d\x20\x97\x31\xe9\x11\xa5\x02\xdd\x24"
@@ -26,8 +27,8 @@ void test_expand_key() {
             "\x39\x71\x07\x14\xa0\x29\xf9\x45\x6a\xb3\xe4\xb4\xc7\xed\xe5\x01"
             "\x77\xa8\x7b\xd2\xd7\x81\x82\x97\xbd\x32\x66\x23\x7a\xdf\x83\x22"
             "\xdf\x44\xe8\x08\x08\xc5\x6a\x9f\xb5\xf7\x0c\xbc\xcf\x28\x8f\x9e";
-    aes_init(&aes, AES_128, "Hello world12345", 16);
-    assert(memcmp(expected, aes.expanded_key, sizeof(expected)) == 0);
+    aes_init(&aes, AES_128, key, sizeof(key) - 1);
+    assert(memcmp(expected, aes.expanded_key, sizeof(expected) - 1) == 0);
 }
 
 int main() {

@@ -11,7 +11,6 @@ typedef struct {
     uint32_t key_size;
     uint32_t expanded_key_len;
     uint32_t num_rounds;
-    uint32_t ;
     uint8_t state[16];
     uint8_t *expanded_key;
 } aes_t;
