@@ -12,6 +12,16 @@
         printf(" ok\n"); \
 }
 
+void print_hex(uint8_t *xs) {
+    int i, j;
+    for (i = 0; i < 16; i+=4) {
+        for (j = 0; j < 4; j++) {
+            printf("%02x ", xs[i + j]);
+        }
+        printf("\n");
+    }
+}
+
 void test_expand_key() {
     aes_t aes;
     uint8_t key[] = "Hello world12345";
@@ -31,7 +41,53 @@ void test_expand_key() {
     assert(memcmp(expected, aes.expanded_key, sizeof(expected) - 1) == 0);
 }
 
+void test_sub_bytes() {
+    aes_t aes;
+    uint8_t key[] = "Hello world12345";
+    uint8_t state[] = 
+            "1234"
+            "5678"
+            "9012"
+            "3456";
+    uint8_t expected[] = 
+            "\xc7\x23\xc3\x18"
+            "\x96\x05\x9a\x07"
+            "\x12\x04\xc7\x23"
+            "\xc3\x18\x96\x05";
+
+    aes_init(&aes, AES_128, key, sizeof(key) - 1);
+    memcpy(aes.state, state, sizeof(state) - 1);
+
+    sub_bytes(&aes);
+
+    assert(memcmp(expected, aes.state, sizeof(expected) - 1) == 0);
+}
+
+void test_shift_rows() {
+    aes_t aes;
+    uint8_t key[] = "Hello world12345";
+    uint8_t state[] = 
+            "1234"
+            "5678"
+            "9012"
+            "3456";
+    uint8_t expected[] = 
+            "1234"
+            "6785"
+            "1290"
+            "6345";
+    
+    aes_init(&aes, AES_128, key, sizeof(key) - 1);
+    memcpy(aes.state, state, sizeof(state) - 1);
+
+    shift_rows(&aes);
+
+    assert(memcmp(expected, aes.state, sizeof(expected) - 1) == 0);
+}
+
 int main() {
     TEST_THAT("expand key works", test_expand_key);
+    TEST_THAT("sub bytes works", test_sub_bytes);
+    TEST_THAT("shift rows works", test_shift_rows);
     return 0;
 }

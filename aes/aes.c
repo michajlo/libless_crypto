@@ -4,8 +4,6 @@
 
 #include "aes.h"
 
-#define ROT_LEFT(x,n)   (((x) << ((n)*8)) | ((x) >> ((4-n)*8) & (uint32_t)-1 >> ((4-n)*8)))
-
 static uint8_t rcon[255] = {
     0x8d,0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80,0x1b,0x36,0x6c,0xd8,0xab,0x4d,0x9a,
     0x2f,0x5e,0xbc,0x63,0xc6,0x97,0x35,0x6a,0xd4,0xb3,0x7d,0xfa,0xef,0xc5,0x91,0x39, 
@@ -174,6 +172,13 @@ uint8_t galois_14[256] = {
     0xd7,0xd9,0xcb,0xc5,0xef,0xe1,0xf3,0xfd,0xa7,0xa9,0xbb,0xb5,0x9f,0x91,0x83,0x8d
 };
 
+static uint32_t rot_left(uint32_t x,uint32_t n)    { 
+       uint32_t l = (((uint32_t)x) << ((n)*8)); 
+       uint32_t r = (((uint32_t)(x)) >> ((4-n)*8)); 
+       uint32_t v = l | r;
+       return v;
+}
+
 int aes_init(aes_t *aes, uint32_t aes_type, uint8_t *key, uint8_t key_len) {
     uint32_t pad = 0;
     uint32_t I = 1;
@@ -206,7 +211,7 @@ int aes_init(aes_t *aes, uint32_t aes_type, uint8_t *key, uint8_t key_len) {
         uint8_t *t_bytes;
 
         t = *((uint32_t *)(aes->expanded_key + (expanded_len - 4)));
-        t = ROT_LEFT(t, 3);
+        t = rot_left(t, 3);
         t_bytes = (uint8_t *) &t;
         for (i=0; i<4; i++) {
             t_bytes[i] = S[t_bytes[i]];
@@ -272,8 +277,8 @@ void sub_bytes(aes_t *aes) {
 void shift_rows(aes_t *aes) {
     uint32_t *state_32 = (uint32_t *)aes->state;
     uint32_t i;
-    for (i=1; i<4; i++) {
-        state_32[i] = ROT_LEFT(state_32[i], 4-i);
+    for (i=0; i<4; i++) {
+        state_32[i] = rot_left(state_32[i], 4-i);
     }
 }
 
