@@ -252,7 +252,7 @@ int aes_destroy(aes_t *aes) {
 }
 
 // avoid using 64 bit values... more portable (micros)?
-static void add_round_key(aes_t *aes, uint32_t round) {
+void add_round_key(aes_t *aes, uint32_t round) {
     uint32_t *state_32 = (uint32_t *)aes->state;
     uint32_t *key_32 = (uint32_t *)(aes->expanded_key + 16 * round);
     uint32_t i;
@@ -262,14 +262,14 @@ static void add_round_key(aes_t *aes, uint32_t round) {
     }
 }
 
-static void sub_bytes(aes_t *aes) {
+void sub_bytes(aes_t *aes) {
     uint32_t i;
     for (i=0; i<16; i++) {
         aes->state[i] = S[aes->state[i]];
     }
 }
 
-static void shift_rows(aes_t *aes) {
+void shift_rows(aes_t *aes) {
     uint32_t *state_32 = (uint32_t *)aes->state;
     uint32_t i;
     for (i=1; i<4; i++) {
@@ -278,7 +278,7 @@ static void shift_rows(aes_t *aes) {
 }
 
 // this will be the part that sucks
-static void mix_columns(aes_t *aes) {
+void mix_columns(aes_t *aes) {
     uint8_t result[4];
     uint32_t i;
     for (i=0; i<4; i++) {
@@ -310,7 +310,7 @@ static void mix_columns(aes_t *aes) {
     }
 }
 
-static void mix_columns_inv(aes_t *aes) {
+void mix_columns_inv(aes_t *aes) {
     uint8_t result[4];
     uint32_t i;
     for (i=0; i<4; i++) {
