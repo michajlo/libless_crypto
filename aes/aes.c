@@ -288,10 +288,10 @@ void mix_columns(aes_t *aes) {
     uint32_t i;
     for (i=0; i<4; i++) {
         uint8_t c0 = i + 0;
-        uint8_t c1 = i + 1;
-        uint8_t c2 = i + 2;
-        uint8_t c3 = i + 3;
-
+        uint8_t c1 = i + 4;
+        uint8_t c2 = i + 8;
+        uint8_t c3 = i + 12;
+        
         result[0] = galois_2[aes->state[c0]] ^
                      galois_3[aes->state[c1]] ^
                      aes->state[c2] ^

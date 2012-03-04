@@ -85,9 +85,33 @@ void test_shift_rows() {
     assert(memcmp(expected, aes.state, sizeof(expected) - 1) == 0);
 }
 
+void test_mix_columns() {
+    aes_t aes;
+    uint8_t key[] = "Hello world12345";
+    // from wikipedia's examples
+    uint8_t state[] = 
+            "\xdb\xf2\x01\xc6"
+            "\x13\x0a\x01\xc6"
+            "\x53\x22\x01\xc6"
+            "\x45\x5c\x01\xc6";
+    uint8_t expected[] = 
+            "\x8e\x9f\x01\xc6"
+            "\x4d\xdc\x01\xc6"
+            "\xa1\x58\x01\xc6"
+            "\xbc\x9d\x01\xc6";
+    
+    aes_init(&aes, AES_128, key, sizeof(key) - 1);
+    memcpy(aes.state, state, sizeof(state) - 1);
+
+    mix_columns(&aes);
+
+    assert(memcmp(expected, aes.state, sizeof(expected) - 1) == 0);
+}
+
 int main() {
     TEST_THAT("expand key works", test_expand_key);
     TEST_THAT("sub bytes works", test_sub_bytes);
     TEST_THAT("shift rows works", test_shift_rows);
+    TEST_THAT("mix columns works", test_mix_columns);
     return 0;
 }
