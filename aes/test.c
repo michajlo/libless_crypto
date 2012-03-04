@@ -108,10 +108,79 @@ void test_mix_columns() {
     assert(memcmp(expected, aes.state, sizeof(expected) - 1) == 0);
 }
 
+void test_add_round_key_0() {
+    aes_t aes;
+    uint8_t key[] = "Hello world12345";
+    uint8_t state[] = 
+            "1234"
+            "5678"
+            "9012"
+            "3456";
+    uint8_t expected[] = 
+            "\x79\x57\x5f\x58"
+            "\x5a\x16\x40\x57"
+            "\x4b\x5c\x55\x03"
+            "\x01\x07\x01\x03";
+    
+    aes_init(&aes, AES_128, key, sizeof(key) - 1);
+    memcpy(aes.state, state, sizeof(state) - 1);
+
+    add_round_key(&aes, 0);
+
+    assert(memcmp(expected, aes.state, sizeof(expected) - 1) == 0);
+}
+
+void test_add_round_key_1() {
+    aes_t aes;
+    uint8_t key[] = "Hello world12345";
+    uint8_t state[] = 
+            "1234"
+            "5678"
+            "9012"
+            "3456";
+    uint8_t expected[] = 
+            "\xbb\x4f\xc9\x7b"
+            "\xd0\x6b\xba\x18"
+            "\xae\x01\xd8\x23"
+            "\x96\x36\xe8\x12";
+    
+    aes_init(&aes, AES_128, key, sizeof(key) - 1);
+    memcpy(aes.state, state, sizeof(state) - 1);
+
+    add_round_key(&aes, 1);
+
+    assert(memcmp(expected, aes.state, sizeof(expected) - 1) == 0);
+}
+
+void test_add_round_key_10() {
+    aes_t aes;
+    uint8_t key[] = "Hello world12345";
+    uint8_t state[] = 
+            "1234"
+            "5678"
+            "9012"
+            "3456";
+    uint8_t expected[] = 
+            "\xee\x76\xdb\x3c"
+            "\x3d\xf3\x5d\xa7"
+            "\x8c\xc7\x3d\x8e"
+            "\xfc\x1c\xba\xa8";
+    
+    aes_init(&aes, AES_128, key, sizeof(key) - 1);
+    memcpy(aes.state, state, sizeof(state) - 1);
+
+    add_round_key(&aes, 10);
+
+    assert(memcmp(expected, aes.state, sizeof(expected) - 1) == 0);
+}
+
 int main() {
     TEST_THAT("expand key works", test_expand_key);
     TEST_THAT("sub bytes works", test_sub_bytes);
     TEST_THAT("shift rows works", test_shift_rows);
     TEST_THAT("mix columns works", test_mix_columns);
+    TEST_THAT("add round key 0 works", test_add_round_key_0);
+    TEST_THAT("add round key 1 works", test_add_round_key_1);
+    TEST_THAT("add round key 10 works", test_add_round_key_10);
     return 0;
 }
