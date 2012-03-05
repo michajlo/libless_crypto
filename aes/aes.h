@@ -25,6 +25,7 @@ int aes_decrypt(aes_t *aes, uint8_t *in, uint32_t in_len, uint8_t *out);
 
 #ifdef UNDER_TEST
 void sub_bytes(aes_t *aes);
+void sub_bytes_inv(aes_t *aes);
 void add_round_key(aes_t *aes, uint32_t round);
 void shift_rows(aes_t *aes);
 void mix_columns(aes_t *aes);

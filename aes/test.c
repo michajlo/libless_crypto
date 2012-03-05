@@ -220,6 +220,28 @@ void test_mix_columns_inv() {
     assert(memcmp(expected, aes.state, sizeof(expected) - 1) == 0);
 }
 
+void test_sub_bytes_inv() {
+    aes_t aes;
+    uint8_t key[] = "Hello world12345";
+    uint8_t state[] = 
+            "\xc7\x23\xc3\x18"
+            "\x96\x05\x9a\x07"
+            "\x12\x04\xc7\x23"
+            "\xc3\x18\x96\x05";
+    uint8_t expected[] = 
+            "1234"
+            "5678"
+            "9012"
+            "3456";
+
+    aes_init(&aes, AES_128, key, sizeof(key) - 1);
+    memcpy(aes.state, state, sizeof(state) - 1);
+
+    sub_bytes_inv(&aes);
+
+    assert(memcmp(expected, aes.state, sizeof(expected) - 1) == 0);
+}
+
 int main() {
     TEST_THAT("expand key works", test_expand_key);
     TEST_THAT("sub bytes works", test_sub_bytes);
@@ -230,5 +252,6 @@ int main() {
     TEST_THAT("add round key 10 works", test_add_round_key_10);
     TEST_THAT("encrypt block works", test_encrypt_block);
     TEST_THAT("mix columns inverse works", test_mix_columns_inv);
+    TEST_THAT("sub bytes inverse works", test_sub_bytes_inv);
     return 0;
 }

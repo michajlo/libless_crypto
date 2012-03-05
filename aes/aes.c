@@ -274,6 +274,13 @@ void sub_bytes(aes_t *aes) {
     }
 }
 
+void sub_bytes_inv(aes_t *aes) {
+    uint32_t i;
+    for (i=0; i<16; i++) {
+        aes->state[i] = i_S[aes->state[i]];
+    }
+}
+
 void shift_row(aes_t *aes, uint32_t row, uint32_t amt) {
     uint32_t row_32 = 0;
     row_32 |= aes->state[row];
