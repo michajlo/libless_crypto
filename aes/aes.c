@@ -172,9 +172,10 @@ uint8_t galois_14[256] = {
     0xd7,0xd9,0xcb,0xc5,0xef,0xe1,0xf3,0xfd,0xa7,0xa9,0xbb,0xb5,0x9f,0x91,0x83,0x8d
 };
 
-static uint32_t rot_left(uint32_t x,uint32_t n)    { 
-       uint32_t l = (((uint32_t)x) << ((n)*8)); 
-       uint32_t r = (((uint32_t)(x)) >> ((4-n)*8)); 
+// XXX: Assumes little endian
+static uint32_t rot_left(uint32_t x, uint32_t n)    { 
+       uint32_t l = (((uint32_t)x) >> ((n)*8)); 
+       uint32_t r = (((uint32_t)(x)) << ((4-n)*8)); 
        uint32_t v = l | r;
        return v;
 }
@@ -211,7 +212,7 @@ int aes_init(aes_t *aes, uint32_t aes_type, uint8_t *key, uint8_t key_len) {
         uint8_t *t_bytes;
 
         t = *((uint32_t *)(aes->expanded_key + (expanded_len - 4)));
-        t = rot_left(t, 3);
+        t = rot_left(t, 1);
         t_bytes = (uint8_t *) &t;
         for (i=0; i<4; i++) {
             t_bytes[i] = S[t_bytes[i]];
@@ -299,8 +300,16 @@ void shift_row(aes_t *aes, uint32_t row, uint32_t amt) {
 void shift_rows(aes_t *aes) {
     uint32_t i;
     for (i=1; i<4; i++) {
+        shift_row(aes, i, i);
+    }
+}
+
+void shift_rows_inv(aes_t *aes) {
+    uint32_t i;
+    for (i=1; i<4; i++) {
         shift_row(aes, i, 4-i);
     }
+
 }
 
 // this will be the part that sucks

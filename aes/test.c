@@ -107,6 +107,28 @@ void test_shift_rows() {
     assert(memcmp(expected, aes.state, sizeof(expected) - 1) == 0);
 }
 
+void test_shift_rows_inv() {
+    aes_t aes;
+    uint8_t key[] = "Hello world12345";
+    uint8_t state[] = 
+            "1616"  // 1 2 3 4
+            "2723"  // 6 7 8 5
+            "3894"  // 1 2 9 0
+            "4505"; // 6 3 4 5
+    uint8_t expected[] = 
+            "1593"  // 1 2 3 4
+            "2604"  // 5 6 7 8
+            "3715"  // 9 0 1 2
+            "4826"; // 3 4 5 6
+    
+    aes_init(&aes, AES_128, key, sizeof(key) - 1);
+    memcpy(aes.state, state, sizeof(state) - 1);
+
+    shift_rows_inv(&aes);
+
+    assert(memcmp(expected, aes.state, sizeof(expected) - 1) == 0);
+}
+
 void test_mix_columns() {
     aes_t aes;
     uint8_t key[] = "Hello world12345";
@@ -248,6 +270,7 @@ int main() {
     TEST_THAT("sub bytes works", test_sub_bytes);
     TEST_THAT("sub bytes inverse works", test_sub_bytes_inv);
     TEST_THAT("shift rows works", test_shift_rows);
+    TEST_THAT("shift rows inverse works", test_shift_rows_inv);
     TEST_THAT("mix columns works", test_mix_columns);
     TEST_THAT("mix columns inverse works", test_mix_columns_inv);
     TEST_THAT("add round key 0 works", test_add_round_key_0);
