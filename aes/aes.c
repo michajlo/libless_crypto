@@ -395,6 +395,23 @@ void encrypt_block(aes_t *aes) {
     add_round_key(aes, aes->num_rounds);
 }
 
+void decrypt_block(aes_t *aes) {
+    uint32_t round;
+
+    add_round_key(aes, aes->num_rounds);
+
+    for (round=aes->num_rounds-1; round > 0; round--) {
+        shift_rows_inv(aes);
+        sub_bytes_inv(aes);
+        add_round_key(aes, round);
+        mix_columns_inv(aes);
+    }
+
+    shift_rows_inv(aes);
+    sub_bytes_inv(aes);
+    add_round_key(aes, 0);
+}
+
 int aes_encrypt(aes_t *aes, uint8_t *in, uint32_t len, uint8_t *out) {
 
     return 0;

@@ -32,6 +32,7 @@ void shift_rows_inv(aes_t *aes);
 void mix_columns(aes_t *aes);
 void mix_columns_inv(aes_t *aes);
 void encrypt_block(aes_t *aes);
+void decrypt_block(aes_t *aes);
 #endif
 
 #endif
