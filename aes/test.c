@@ -285,6 +285,49 @@ void test_decrypt_block() {
     assert(memcmp(expected, aes.state, sizeof(expected) - 1) == 0);
 }
 
+void printit(char *cs) {
+    int i;
+    printf("\n");
+    for (i=0; i<16; i++) {
+        printf("\\x%02x", cs[i] & 0xff);
+    }
+    printf("\";\n");
+}
+
+void test_encrypt() {
+    aes_t aes;
+    uint8_t key[] = "Hello world12345";
+    uint8_t plaintext[] = "The quick brown fox jumps over the lazy dog";
+    uint8_t expected[] = 
+            "\xa4\x2d\x42\xae\x65\xf7\x4a\x88\x56\x3a\x1a\x47\xdd\x34\x43\x77"
+            "\x7c\xbc\xf3\x1c\x15\x1f\x4c\xb6\x6f\x04\x1f\x13\x40\x8e\x19\x1e"
+            "\x73\xd7\x5a\xae\xfa\xd7\xb0\x31\xb0\x14\x4b\x9a\x0a\xd0\x14\x12";
+    uint8_t result[sizeof(expected)];
+
+    aes_init(&aes, AES_128, key, sizeof(key)-1);
+
+    aes_encrypt(&aes, plaintext, sizeof(plaintext)-1, result);
+
+    assert(memcmp(expected, result, sizeof(expected) - 1) == 0);
+}
+
+void test_decrypt() {
+    aes_t aes;
+    uint8_t key[] = "Hello world12345";
+    uint8_t ciphertext[] = 
+            "\xa4\x2d\x42\xae\x65\xf7\x4a\x88\x56\x3a\x1a\x47\xdd\x34\x43\x77"
+            "\x7c\xbc\xf3\x1c\x15\x1f\x4c\xb6\x6f\x04\x1f\x13\x40\x8e\x19\x1e"
+            "\x73\xd7\x5a\xae\xfa\xd7\xb0\x31\xb0\x14\x4b\x9a\x0a\xd0\x14\x12";
+    uint8_t expected[] = "The quick brown fox jumps over the lazy dog";
+    uint8_t result[sizeof(ciphertext)-1];
+
+    aes_init(&aes, AES_128, key, sizeof(key)-1);
+
+    aes_decrypt(&aes, ciphertext, sizeof(ciphertext)-1, result);
+
+    assert(memcmp(expected, result, sizeof(expected) - 1) == 0);
+}
+
 
 int main() {
     TEST_THAT("expand key works", test_expand_key);
@@ -299,5 +342,7 @@ int main() {
     TEST_THAT("add round key 10 works", test_add_round_key_10);
     TEST_THAT("encrypt block works", test_encrypt_block);
     TEST_THAT("decrypt block works", test_decrypt_block);
+    TEST_THAT("encrypt works", test_encrypt);
+    TEST_THAT("decrypt works", test_decrypt);
     return 0;
 }
