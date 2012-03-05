@@ -174,6 +174,29 @@ void test_add_round_key_10() {
     assert(memcmp(expected, aes.state, sizeof(expected) - 1) == 0);
 }
 
+void test_encrypt_block() {
+    aes_t aes;
+    uint8_t key[] = "Hello world12345";
+    uint8_t state[] = 
+            "1234"
+            "5678"
+            "9012"
+            "3456";
+    uint8_t expected[] = 
+            "\x91\x56\x73\xe8"
+            "\x6a\x01\x45\xe5"
+            "\x02\xfd\x36\x90"
+            "\x7e\xee\x61\xec";
+    
+    aes_init(&aes, AES_128, key, sizeof(key) - 1);
+    memcpy(aes.state, state, sizeof(state) - 1);
+
+    encrypt_block(&aes);
+
+    assert(memcmp(expected, aes.state, sizeof(expected) - 1) == 0);
+    
+}
+
 int main() {
     TEST_THAT("expand key works", test_expand_key);
     TEST_THAT("sub bytes works", test_sub_bytes);
@@ -182,5 +205,6 @@ int main() {
     TEST_THAT("add round key 0 works", test_add_round_key_0);
     TEST_THAT("add round key 1 works", test_add_round_key_1);
     TEST_THAT("add round key 10 works", test_add_round_key_10);
+    TEST_THAT("encrypt block works", test_encrypt_block);
     return 0;
 }

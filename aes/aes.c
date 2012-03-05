@@ -362,6 +362,23 @@ void mix_columns_inv(aes_t *aes) {
 
 }
 
+void encrypt_block(aes_t *aes) {
+    uint32_t round;
+
+    add_round_key(aes, 0);
+
+    for (round=1; round < aes->num_rounds; round++) {
+        sub_bytes(aes);
+        shift_rows(aes);
+        mix_columns(aes);
+        add_round_key(aes, round);
+    }
+
+    sub_bytes(aes);
+    shift_rows(aes);
+    add_round_key(aes, aes->num_rounds);
+}
+
 int aes_encrypt(aes_t *aes, uint8_t *in, uint32_t len, uint8_t *out) {
 
     return 0;

@@ -20,9 +20,6 @@ typedef struct {
 int aes_init(aes_t *aes, uint32_t aes_type, uint8_t *key, uint8_t key_len);
 int aes_destroy(aes_t *aes);
 
-int aes_encrypt_block(aes_t *aes, uint8_t *in, uint8_t *out);
-int aes_decrypt_block(aes_t *aes, uint8_t *in, uint8_t *out);
-
 int aes_encrypt(aes_t *aes, uint8_t *in, uint32_t in_len, uint8_t *out);
 int aes_decrypt(aes_t *aes, uint8_t *in, uint32_t in_len, uint8_t *out);
 
@@ -32,6 +29,7 @@ void add_round_key(aes_t *aes, uint32_t round);
 void shift_rows(aes_t *aes);
 void mix_columns(aes_t *aes);
 void mix_columns_inv(aes_t *aes);
+void encrypt_block(aes_t *aes);
 #endif
 
 #endif
