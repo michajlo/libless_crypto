@@ -197,6 +197,29 @@ void test_encrypt_block() {
     
 }
 
+void test_mix_columns_inv() {
+    aes_t aes;
+    uint8_t key[] = "Hello world12345";
+    // from wikipedia's examples
+    uint8_t state[] = 
+            "\x8e\x4d\xa1\xbc"
+            "\x9f\xdc\x58\x9d"
+            "\x01\x01\x01\x01"
+            "\xc6\xc6\xc6\xc6";
+    uint8_t expected[] = 
+            "\xdb\x13\x53\x45"
+            "\xf2\x0a\x22\x5c"
+            "\x01\x01\x01\x01"
+            "\xc6\xc6\xc6\xc6";
+
+    aes_init(&aes, AES_128, key, sizeof(key) - 1);
+    memcpy(aes.state, state, sizeof(state) - 1);
+
+    mix_columns_inv(&aes);
+
+    assert(memcmp(expected, aes.state, sizeof(expected) - 1) == 0);
+}
+
 int main() {
     TEST_THAT("expand key works", test_expand_key);
     TEST_THAT("sub bytes works", test_sub_bytes);
@@ -206,5 +229,6 @@ int main() {
     TEST_THAT("add round key 1 works", test_add_round_key_1);
     TEST_THAT("add round key 10 works", test_add_round_key_10);
     TEST_THAT("encrypt block works", test_encrypt_block);
+    TEST_THAT("mix columns inverse works", test_mix_columns_inv);
     return 0;
 }

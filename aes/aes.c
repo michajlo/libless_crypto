@@ -332,7 +332,7 @@ void mix_columns(aes_t *aes) {
 void mix_columns_inv(aes_t *aes) {
     uint8_t result[4];
     uint32_t i;
-    for (i=0; i<4; i++) {
+    for (i=0; i<16; i+=4) {
         uint8_t c0 = i + 0;
         uint8_t c1 = i + 1;
         uint8_t c2 = i + 2;
