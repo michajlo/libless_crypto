@@ -274,11 +274,25 @@ void sub_bytes(aes_t *aes) {
     }
 }
 
+void shift_row(aes_t *aes, uint32_t row, uint32_t amt) {
+    uint32_t row_32 = 0;
+    row_32 |= aes->state[row];
+    row_32 |= (aes->state[row + 4] << 8);
+    row_32 |= (aes->state[row + 8] << 16);
+    row_32 |= (aes->state[row + 12] << 24);
+    
+    row_32 = rot_left(row_32, amt);
+    
+    aes->state[row] = row_32 & 0xff;
+    aes->state[row + 4] = (row_32 >> 8) & 0xff;
+    aes->state[row + 8] = (row_32 >> 16) & 0xff;
+    aes->state[row + 12] = (row_32 >> 24) & 0xff;
+}
+
 void shift_rows(aes_t *aes) {
-    uint32_t *state_32 = (uint32_t *)aes->state;
     uint32_t i;
-    for (i=0; i<4; i++) {
-        state_32[i] = rot_left(state_32[i], 4-i);
+    for (i=1; i<4; i++) {
+        shift_row(aes, i, 4-i);
     }
 }
 

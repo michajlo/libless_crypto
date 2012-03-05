@@ -67,15 +67,15 @@ void test_shift_rows() {
     aes_t aes;
     uint8_t key[] = "Hello world12345";
     uint8_t state[] = 
-            "1234"
-            "5678"
-            "9012"
-            "3456";
+            "1593"  // 1 2 3 4
+            "2604"  // 5 6 7 8
+            "3715"  // 9 0 1 2
+            "4826"; // 3 4 5 6
     uint8_t expected[] = 
-            "1234"
-            "6785"
-            "1290"
-            "6345";
+            "1616"  // 1 2 3 4
+            "2723"  // 6 7 8 5
+            "3894"  // 1 2 9 0
+            "4505"; // 6 3 4 5
     
     aes_init(&aes, AES_128, key, sizeof(key) - 1);
     memcpy(aes.state, state, sizeof(state) - 1);
