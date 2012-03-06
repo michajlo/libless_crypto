@@ -431,14 +431,14 @@ int aes_encrypt(aes_t *aes, uint8_t *in, uint32_t len, uint8_t *out) {
 
 int aes_decrypt(aes_t *aes, uint8_t *in, uint32_t len, uint8_t *out) {
     int i;
+    
+    if (len%16 != 0) {
+        // ciphertext must be multiple of 16
+        return -1;
+    }
+
     for (i=0; i<len; i+=16) {
-        int j;
-        for (j=0; j<16 && i+j<len; j++) {
-            aes->state[j] = in[i+j];
-        }
-        for (; j<16; j++) {
-            aes->state[j] = '\0';
-        }
+        memcpy(aes->state, in + i, 16);
         decrypt_block(aes);
         memcpy(out + i, aes->state, 16);
     }
